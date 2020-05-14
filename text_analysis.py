@@ -39,6 +39,8 @@ def is_escaped_unicode(str):
     return False
 
 number_patterns = r"[0-9].*"
+title_pattern = r"==[a-zA-Z].*=="
+spaces_pattern = r"\s\s+"
 
 def dummy(doc):
     return doc
@@ -109,12 +111,14 @@ def analyze_data(dict_companies_pages, n):
         #remove useless punctuation from tokens (es. Apple$ (dirty text happens sometimes)) and numbers
         document = [x.lower().replace("_", " ").replace("|"," ").replace("\\"," ").replace("!"," ").replace("\""," ").replace("£"," ").replace("$"," ").replace("%"," ").replace("&", " ").replace("-"," ").replace("("," ").replace(")"," ").replace("="," ").replace("?"," ").replace("^"," ").replace(","," ").replace("@"," ").replace("#"," ").replace("\'"," ").replace("~", " ").replace("/", " ") for x in document]
         document = [re.sub(number_patterns, "", x) for x in document]
+        #to remove titles of wiki sections
+        document = [re.sub(title_pattern, "", x) for x in document]
+        document = [re.sub(spaces_pattern, "", x) for x in document]
 
         #final clean of stopwords, empty elements, words shorter than threshold and single punctuation tokens
         #stemming is to decrease number of features, while matching similar words with the same string, so to count correct frequencies.
-        document = [ps.stem(x) for x in document if (x is not " ")and (is_escaped_unicode(x)) and (x not in punctuation_list) and (x not in stopwords.words('english')) and (len(x)>1)]
+        document = [ps.stem(x) for x in document if (is_escaped_unicode(x)) and (x not in punctuation_list) and (x not in stopwords.words('english')) and (len(x)>1)]
 
-        print(document)
         tfidf_list.append(document)
         dict_index_company_name[counter] = company
         counter+=1
@@ -145,15 +149,8 @@ def analyze_data(dict_companies_pages, n):
         dict_company_keylist[dict_index_company_name[i]] = keyword_list
         
 
+    f = open("./dict_company_keylist.json", "w+")
+    json_data = json.dumps(dict_company_keylist)
+    f.write(json_data)  
 
-
-    return dict_company_keylist
-
-        
-
-
-
-
-
-
-print(analyze_data(dict_companies_pages, 6))
+analyze_data(dict_companies_pages, 6)

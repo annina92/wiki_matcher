@@ -73,6 +73,8 @@ def analyze_companies_dict(dict_companies_pages):
 
         print(document)
 
+        
+
 
 
 

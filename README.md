@@ -1,6 +1,6 @@
 # wiki_matcher
 
-Scaricare cartella dei file e il risultato si trova nel file dict_company_keyset.json
+Scaricare cartella dei file e il risultato si trova nel file dict_company_keylist.json
 Le parole hanno subìto processo di stemming, quindi le vedete troncate, ma c'è modo di risalire alla parola originale.
 
 Problemi riscontrati:
